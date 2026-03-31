@@ -1,0 +1,72 @@
+{% extends 'base.html' %} 
+{% block content %}
+
+<div class="container py-5">
+
+    <div class="text-center mb-5">
+        <h1>Sistema de Recomendación</h1>
+        <p class="text-muted">Encuentra la película ideal según tu descripción</p>
+    </div>
+
+    <div class="card shadow-sm p-4 mb-5">
+        <form method="post" class="row g-3 justify-content-center">
+            {% csrf_token %}
+
+            <div class="col-md-8">
+                <input
+                    type="text"
+                    name="prompt"
+                    class="form-control form-control-lg"
+                    placeholder="Ej: película de guerra, amor imposible, ciencia ficción..."
+                    value="{{ prompt }}"
+                    required
+                >
+            </div>
+
+            <div class="col-md-2 d-grid">
+                <button type="submit" class="btn btn-primary btn-lg">
+                    Buscar
+                </button>
+            </div>
+        </form>
+    </div>
+
+    {% if best_movie %}
+    <div class="card shadow-lg p-4d">
+        <div class="row g-4 align-items-center">
+
+            <div class="col-md-4 text-center">
+                {% if best_movie.image %}
+                    <img src="{{ best_movie.image.url }}" class="img-fluid movie-img" alt="{{ best_movie.title }}">
+                {% else %}
+                    <img src="https://via.placeholder.com/300x400?text=No+Image" class="img-fluid movie-img">
+                {% endif %}
+            </div>
+
+            <div class="col-md-8">
+                <h2 class="fw-bold">{{ best_movie.title }}</h2>
+
+                <p class="text-muted mb-2">
+                    {{ best_movie.genre }} | {{ best_movie.year }}
+                </p>
+
+                <p>{{ best_movie.description }}</p>
+
+                <div class="alert alert-success mt-3">
+                    <strong>Similitud:</strong> {{ max_similarity|floatformat:4 }}
+                </div>
+
+                {% if best_movie.url %}
+                    <a href="{{ best_movie.url }}" target="_blank" class="btn btn-outline-dark mt-2">
+                        Ver más
+                    </a>
+                {% endif %}
+            </div>
+
+        </div>
+    </div>
+    {% endif %}
+
+</div>
+
+{% endblock content %}
